@@ -34,7 +34,7 @@ public class HibernateConfig {
     }
 
     /************* Start Spring JPA config details **************/
-    @Bean
+    @Bean("emf")
     public LocalContainerEntityManagerFactoryBean EntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean lcemfb =
                 new LocalContainerEntityManagerFactoryBean();
@@ -56,13 +56,13 @@ public class HibernateConfig {
 
 //    @Bean(name = "transactionManager")
 //    public PlatformTransactionManager txManager() {
-//        return new JpaTransactionManager(getEntityManagerFactory().getObject());
+//        return new JpaTransactionManager(EntityManagerFactory().getObject());
 //    }
     @Bean
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(EntityManagerFactory().getObject());
-
+        transactionManager.setDataSource(getDataSource());
         return transactionManager;
     }
 
