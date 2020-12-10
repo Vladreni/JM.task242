@@ -12,19 +12,21 @@
     <tr>
         <th>ID</th>
         <th>NAME</th>
-        <th>AGE</th>
+        <th>PASSWORD</th>
+        <th>ROLES</th>
     </tr>
     <tr th:each="user : ${usersList}">
         <td th:utext="${user.getId()}">Id</td>
-        <td><a th:href="@{/users/{id}(id=${user.getId()})}"><p th:utext="${user.getName()}">name</p></a></td>
-        <td th:utext="${user.getAge()}">Age</td>
+        <td><a th:href="@{/admin/{id}(id=${user.getId()})}"><p th:utext="${user.getName()}">name</p></a></td>
+        <td th:utext="${user.getPassword()}">Password</td>
+        <td th:each="role : ${user.getRoles()}" th:utext="${role.getRole()}">Roles</td>
 
     </tr>
 </table>
 </div>
 <br/>
 <hr/>
-<form th:action="@{/users/new}" th:method="get">
+<form th:action="@{/admin/new}" th:method="get">
     <input  class="button button-block" type="submit" value="Go to create new user!"/>
 </form>
 </body>

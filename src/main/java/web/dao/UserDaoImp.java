@@ -1,12 +1,12 @@
 package web.dao;
 
+import org.hibernate.query.Query;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import web.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 import java.util.List;
 
 @Repository
@@ -25,52 +25,68 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public void add(User user) {
-        //EntityManager entityManager = entityFactory.createEntityManager();
-        //entityManager.getTransaction().begin();
-        entityManager.persist(user);
-        //entityManager.getTransaction().commit();
 
-        //sessionFactory.getCurrentSession().save(user);
+//        System.out.println(user.getPassword());
+//        System.out.println(user.getName());
+//        System.out.println(user.getId());
+        //user.getRoles();
+
+        entityManager.persist(user);
+
     }
 
     @Override
     public User getUserById(Long id) {
-        //EntityManager entityManager = entityFactory.createEntityManager();
+
         User user = entityManager.find(User.class, id);
         //entityManager.detach(user);
         return user;
 
-        //return (User) sessionFactory.getCurrentSession().get(User.class, id);
+    }
+
+    @Override
+    public User getUserByName(String name) {
+//        TypedQuery q = entityManager.createQuery(
+//                "SELECT u FROM User u WHERE u.name = :name", User.class);
+
+        Query q = (Query) entityManager.createQuery(
+                "select u from User u where u.name = :name");
+        q.setParameter("name", name);
+
+        try {
+            return (User) q.getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+                //userRepository.findByUsername(name);
+
     }
 
     @Override
     public void update(User user) {
-        //EntityManager entityManager = entityFactory.createEntityManager();
 
-        //entityManager.getTransaction().begin();
+//        System.out.println(user.getPassword());
+//        System.out.println(user.getName());
+//        System.out.println(user.getId());
+//        user.getRoles();
+
         entityManager.merge(user);
-        //entityManager.getTransaction().commit();
 
-        //sessionFactory.getCurrentSession().update(user);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<User> listUsers() {
-        //EntityManager entityManager = entityFactory.createEntityManager();
+
 
         return entityManager.createQuery("select u from User as u").getResultList();
     }
 
     @Override
     public void del(User user) {
-        //EntityManager entityManager = entityFactory.createEntityManager();
 
-        //entityManager.getTransaction().begin();
         entityManager.remove(entityManager.contains(user)
                                 ? user
                                 : entityManager.merge(user));
-        //entityManager.getTransaction().commit();
-
     }
 }
